@@ -30,4 +30,4 @@
        - y = y + yIncrement
 
 7. **Stop Once All Steps Are Plotted**
-   - End the iteration after plotting all points, resulting in a line from (x0, y0) to (x1, y1).
+   - End the iteration process after plotting all points, resulting in a line from (x0, y0) to (x1, y1).
