@@ -7,7 +7,7 @@
 
 2. **Calculate the Differences**
    - Calculate the differences in the x and y directions:
-     - ΔX = x1 - x0
+     - sugX = x1 - x0
      - ΔY = y1 - y0
 
 3. **Determine the Number of Steps**
