@@ -33,4 +33,4 @@ plt.xlabel("X-Axis")
 plt.ylabel("Y-Axis")
 plt.title(f"Line from ({x0}, {y0}) to ({x1}, {y1}) using DDA")
 plt.grid(True)
-plt.show()
+plt.savefig("dda-op-image.png") #plt.show() requires an interface that supports GUI  
