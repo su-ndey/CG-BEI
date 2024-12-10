@@ -16,7 +16,7 @@ def dda(x1, y1, x2, y2):
 
     dx = x2 - x1
     dy = y2 - y1
-    steps = max(abs(dx), abs(dy))  # Correctly calculate the number of steps
+    steps = max(abs(dx), abs(dy)) 
 
     x_increment = dx / steps
     y_increment = dy / steps
@@ -26,20 +26,20 @@ def dda(x1, y1, x2, y2):
     xes = []
     yes = []
 
-    for _ in range(steps):  # Use a throwaway variable for loop iteration
+    for _ in range(steps):  
         xes.append(round(x))
         yes.append(round(y))
         x += x_increment
         y += y_increment
 
-    plt.grid(True)  # Set grid visibility to True
+    plt.grid(True) 
     plt.plot(xes, yes)
-    plt.xlabel("X-axis")  # Add axis labels for clarity
+    plt.xlabel("X-axis")  
     plt.ylabel("Y-axis")
-    plt.title("Line using DDA Algorithm")  # Add a title
+    plt.title("Line using DDA Algorithm") 
     plt.show()
 
-# Get input coordinates
+
 xo = int(input("X-coordinate of the 1st point: "))
 yo = int(input("Y-coordinate of the 1st point: "))
 xi = int(input("X-coordinate of the end point: "))
