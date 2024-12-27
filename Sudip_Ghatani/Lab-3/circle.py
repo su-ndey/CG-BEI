@@ -5,15 +5,24 @@ def plot(xes,yes,x,y,xc,yc):
     yes.extend([y+yc,y+yc,-y+yc,-y+yc,x+yc,x+yc,-x+yc,-x+yc])
     
 
-def mid-circle():
-
-    r  = int(input("enter the radius:"))
-    xc = 0       
+def mid_circle():
+    print("1.Circle with center at origin origin\n2.Circule with centre (x,y)\n")
+    choice = int(input())
+    xc = 0
     yc = 0
+    r = 0
+    if choice == 1:
+        r  = int(input("enter the radius:"))
+    if choice == 2:
+        r  = int(input("enter the radius:"))
+        xc = int(input("enter the centre x:"))   
+        yc = int(input("enter the centre y:"))
+        
    
-    x=0
-    y=r
-    p = 1-r 
+    x = 0
+    y = r
+    p = 1 - r
+    
     
     xes = []
     yes = []
@@ -37,4 +46,4 @@ def mid-circle():
     plt.grid(True)
     plt.show()
 
-mid-circle()   
+mid_circle()   
