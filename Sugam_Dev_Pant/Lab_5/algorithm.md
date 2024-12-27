@@ -1,138 +1,105 @@
-import numpy as np
-import matplotlib.pyplot as plt
+# Bresenham's Line Drawing Algorithm and 2D Transformations
 
-def bresenham_line(x0, y0, x1, y1):
-    """Generates points for a line using Bresenham's Algorithm."""
-    xes, yes = [], []
-    dx, dy = abs(x1 - x0), abs(y1 - y0)
-    sx, sy = (1 if x1 > x0 else -1), (1 if y1 > y0 else -1)
+## Overview
 
-    if dx >= dy:
-        p = 2 * dy - dx
-        x, y = x0, y0
-        for _ in range(dx + 1):
-            xes.append(x)
-            yes.append(y)
-            x += sx
-            if p >= 0:
-                y += sy
-                p += 2 * dy - 2 * dx
-            else:
-                p += 2 * dy
-    else:
-        p = 2 * dx - dy
-        x, y = x0, y0
-        for _ in range(dy + 1):
-            xes.append(x)
-            yes.append(y)
-            y += sy
-            if p >= 0:
-                x += sx
-                p += 2 * dx - 2 * dy
-            else:
-                p += 2 * dx
+This document describes the algorithms for:
+1. **Bresenham's Line Drawing Algorithm**
+2. **Scaling Transformation**
+3. **Fixed-Point Rotation Transformation**
 
-    return xes, yes
+Each algorithm includes an explanation of the logic behind it and how it is implemented in the context of plotting lines and applying transformations.
 
-def apply_2d_transformation(x_coords, y_coords, transformation_matrix):
-    """Applies a 2D transformation matrix to a set of points."""
-    points = np.vstack([x_coords, y_coords, np.ones_like(x_coords)])  # Homogeneous coordinates
-    transformed_points = transformation_matrix @ points  # Matrix multiplication
-    return transformed_points[0], transformed_points[1]
+## 1. Bresenham's Line Drawing Algorithm
 
-def apply_scaling(x_coords, y_coords, scale_x, scale_y):
-    """Scales the points by scale_x and scale_y."""
-    x_scaled = [x * scale_x for x in x_coords]
-    y_scaled = [y * scale_y for y in y_coords]
-    return x_scaled, y_scaled
+Bresenham's algorithm is an efficient method for drawing a straight line between two points on a grid. It decides which points to plot based on the decision variable and avoids using floating-point arithmetic, which is faster and more efficient.
 
-def plot_fixed_point_rotation():
-    """Plots the original and rotated line using fixed-point rotation."""
-    # Input original line endpoints
-    x0, y0, x1, y1 = map(int, input("Enter the values of x0, y0, x1, y1: ").split())
+### Steps:
+1. **Input:** Two endpoints of the line, `(x0, y0)` and `(x1, y1)`.
+2. **Calculate Differences:**
+   - `dx = |x1 - x0|`
+   - `dy = |y1 - y0|`
+   - Determine the step direction for `x` and `y` using `sx = (1 if x1 > x0 else -1)` and `sy = (1 if y1 > y0 else -1)`.
+3. **Decision Variable:**
+   - For lines with a steep slope (`dx >= dy`), calculate `p = 2 * dy - dx` and start plotting from `(x0, y0)`.
+   - For lines with a shallow slope (`dy > dx`), calculate `p = 2 * dx - dy` and start plotting similarly.
+4. **Iterate:**
+   - Update `x` or `y` depending on the value of the decision variable `p`.
+   - If `p >= 0`, increment the other coordinate and adjust `p` accordingly.
+   - Continue this process until the end point `(x1, y1)` is reached.
 
-    # Generate points for the original line using Bresenham's algorithm
-    x_orig, y_orig = bresenham_line(x0, y0, x1, y1)
+### Output:
+- The set of points `(x, y)` that form the line between the two endpoints.
 
-    # Input rotation angle and convert to radians
-    theta = float(input("Enter rotation angle in degrees: "))
-    theta = np.radians(theta)
+---
 
-    # Use the first point (x0, y0) as the fixed point for rotation
-    fx, fy = x0, y0
+## 2. Scaling Transformation
 
-    # Create the translation matrix to move the fixed point to the origin
-    translation_to_origin = np.array([
-        [1, 0, -fx],
-        [0, 1, -fy],
-        [0, 0, 1]
-    ])
+Scaling is a geometric transformation that enlarges or reduces an object by multiplying its coordinates by scale factors along the x and y axes. The scaling can be uniform or non-uniform, depending on the scale factors provided.
 
-    # Create the rotation matrix for the given angle
-    rotation_matrix = np.array([
-        [np.cos(theta), -np.sin(theta), 0],
-        [np.sin(theta), np.cos(theta), 0],
-        [0, 0, 1]
-    ])
+### Steps:
+1. **Input:** 
+   - Coordinates of the points forming the object (e.g., a line).
+   - Scaling factors `scale_x` (for the x-axis) and `scale_y` (for the y-axis).
+2. **Transform Coordinates:**
+   - For each point `(x, y)`, apply the scaling transformation:
+     - `x_scaled = x * scale_x`
+     - `y_scaled = y * scale_y`
+3. **Output:** 
+   - The transformed points `(x_scaled, y_scaled)` form the scaled object.
 
-    # Create the inverse translation matrix to move the points back to their original position
-    inverse_translation = np.array([
-        [1, 0, fx],
-        [0, 1, fy],
-        [0, 0, 1]
-    ])
+---
 
-    # Composite transformation matrix: first move to origin, then rotate, and finally move back
-    composite_matrix = inverse_translation @ rotation_matrix @ translation_to_origin
+## 3. Fixed-Point Rotation Transformation
 
-    # Apply the transformation (rotation) to the original points
-    x_rotated, y_rotated = apply_2d_transformation(x_orig, y_orig, composite_matrix)
+Rotation is a geometric transformation that turns an object around a fixed point by a specified angle. Fixed-point rotation means the object rotates around a specific point (typically one of the object's original points).
 
-    # Plot original and rotated lines
-    plt.figure(figsize=(8, 6))
-    plt.plot(x_orig, y_orig, marker='o', color='blue', linestyle='-', label='Original Line')
-    plt.plot(x_rotated, y_rotated, color='green', linestyle='--', label='Rotated Line')
-    plt.title("Bresenham Line with Fixed-Point Rotation")
-    plt.xlabel("X")
-    plt.ylabel("Y")
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+### Steps:
+1. **Input:** 
+   - Coordinates of the points forming the object (e.g., a line).
+   - The rotation angle `theta` in degrees.
+   - The fixed point `(fx, fy)` around which the object will be rotated (often one of the endpoints of the line).
+2. **Translate the Fixed Point to the Origin:**
+   - Apply a translation transformation to move the fixed point `(fx, fy)` to the origin `(0, 0)`. This is achieved by subtracting `fx` and `fy` from the coordinates.
+   - Translation matrix:
+     ``` 
+     translation_to_origin = [
+         [1, 0, -fx],
+         [0, 1, -fy],
+         [0, 0, 1]
+     ]
+     ```
+3. **Apply Rotation:**
+   - Use the 2D rotation matrix to rotate the points:
+     ``` 
+     rotation_matrix = [
+         [cos(theta), -sin(theta), 0],
+         [sin(theta), cos(theta), 0],
+         [0, 0, 1]
+     ]
+     ```
+4. **Translate Back to the Original Position:**
+   - Apply the inverse translation transformation to move the object back to its original position.
+   - Inverse translation matrix:
+     ``` 
+     inverse_translation = [
+         [1, 0, fx],
+         [0, 1, fy],
+         [0, 0, 1]
+     ]
+     ```
+5. **Composite Transformation:**
+   - Combine the translation, rotation, and inverse translation transformations into one composite matrix:
+     ```
+     composite_matrix = inverse_translation @ rotation_matrix @ translation_to_origin
+     ```
+6. **Apply the Transformation:**
+   - Multiply the original coordinates by the composite transformation matrix to get the rotated points.
 
-def plot_scaled_line():
-    """Plots the original and scaled line."""
-    # Input original line endpoints
-    x0, y0, x1, y1 = map(int, input("Enter the values of x0, y0, x1, y1: ").split())
+### Output:
+- The transformed points `(x_rotated, y_rotated)` form the rotated object.
 
-    # Generate points for the original line using Bresenham's algorithm
-    x_orig, y_orig = bresenham_line(x0, y0, x1, y1)
+---
 
-    # Input scaling factors for the x and y axes
-    scale_x = float(input("Enter scaling factor for x-axis: "))
-    scale_y = float(input("Enter scaling factor for y-axis: "))
+## Conclusion
 
-    # Apply scaling transformation to the original points
-    x_scaled, y_scaled = apply_scaling(x_orig, y_orig, scale_x, scale_y)
-
-    # Plot original and scaled lines
-    plt.figure(figsize=(8, 6))
-    plt.plot(x_orig, y_orig, marker='o', color='blue', linestyle='-', label='Original Line')
-    plt.plot(x_scaled, y_scaled, color='red', linestyle='--', label='Scaled Line')
-    plt.title("Bresenham Line with Scaling")
-    plt.xlabel("X")
-    plt.ylabel("Y")
-    plt.legend()
-    plt.grid(True)
-    plt.show()
-
-print("Choose an operation:")
-print("1. Scaling")
-print("2. Fixed-Point Rotation")
-choice = int(input("Enter your choice (1 or 2): "))
-
-if choice == 1:
-    plot_scaled_line()
-elif choice == 2:
-    plot_fixed_point_rotation()
-else:
-    print("Invalid choice.")
+This document outlines the algorithms used for Bresenham's line drawing, scaling, and rotation transformations in a 2D plane. By understanding the underlying principles of these algorithms, you can efficiently manipulate and transform geometric objects in applications such as computer graphics, robotics, and game development.
