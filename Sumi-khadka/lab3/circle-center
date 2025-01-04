@@ -1,0 +1,44 @@
+import matplotlib.pyplot as plt
+def plot_points(xes,yes,x,y,xc,yc):
+    xes.append(x+xc)
+    yes.append(y+yc)
+    xes.append(-x+xc)
+    yes.append(y+yc) 
+    xes.append(-x+xc)
+    yes.append(-y+yc) 
+    xes.append(x+xc)
+    yes.append(-y+yc) 
+    xes.append(y+xc)
+    yes.append(x+yc) 
+    xes.append(-y+xc)
+    yes.append(x+yc) 
+    xes.append(y+xc)
+    yes.append(-x+yc) 
+    xes.append(-y+xc)
+    yes.append(-x+yc)
+
+def mid_point_circle(r,xc,yc):
+    x = 0
+    y = r
+    p=1-r
+    xes=[]
+    yes=[]
+    plot_points(xes,yes,x,y,xc,yc)
+    while(x<y):
+        x=x+1
+        if p<0:
+            
+            p=p+2*x+1
+        else:
+                y=y-1
+                p=p+2*(x-y)+1
+        plot_points(xes,yes,x,y,xc,yc)
+
+    plt.grid()
+    plt.scatter(xes, yes)
+    plt.show()
+
+rad= int(input("enter r:"))
+xc= int(input("enter the center of x"))
+yc= int(input("enter the center of y"))
+mid_point_circle(rad,xc,yc)
